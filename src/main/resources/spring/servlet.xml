@@ -1,0 +1,41 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context 
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/websocket
+            http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+
+
+    <mvc:annotation-driven />
+
+    <mvc:resources mapping="/resources/**" location="/resources/" />
+    
+    <context:component-scan base-package="home.websocket.app"/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--
+    The main thing here is the set up of the message broker for handling the message exchange between the server and its clients. 
+    This is done via the <message-broker> and its child tags. 
+    The tag <websocket:simple-broker> indicates we are using in-memory message broker.
+    It is easy to understand together with the server and client codes so I will include them below first before attempting to give a bit more explanations by cross-referencing the client and server codes.
+    -->
+    <websocket:message-broker application-destination-prefix="/app">
+        <websocket:stomp-endpoint path="/hello">
+            <websocket:sockjs/>
+        </websocket:stomp-endpoint>
+        <websocket:simple-broker prefix="/topic"/>
+    </websocket:message-broker>
+    
+</beans>
